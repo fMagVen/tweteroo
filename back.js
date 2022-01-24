@@ -173,7 +173,7 @@ let users = [
 
 app.get('/tweets', (req, res) =>{
     let pages = parseInt(req.query.page)
-    if(pages != undefined && (pages == NaN || pages < 2)){
+    if(pages != undefined && (pages == NaN || pages < 1)){
         res.status(400).send("Informe uma página válida!")
     }
     else{
@@ -197,22 +197,23 @@ app.get('/tweets', (req, res) =>{
 })
 
 app.post('/sign-up', (req, res) => {
-    if(typeof req.body.username != "string" || typeof req.body.avatar != "string"){
+    if(req.body.username.length < 1 || req.body.avatar < 1){
         res.status(400).send("Todos os campos são obrigatórios!")
     }
     else{
         users.push(req.body)
-        res.status(201).send(users)
+        res.status(201).send(req.body)
     }
+    
 })
 
 app.post('/tweets', (req, res) =>{
-    if(typeof req.body.username != "string" || typeof req.body.tweet != "string"){
+    if(req.body.tweet.length < 1){
         res.status(400).send("Todos os campos são obrigatórios!")
     }
     else{
-        tweets.push(req.body)
-        res.status(201).send(tweets)
+        tweets.push({username: req.headers.user, tweet: req.body.tweet})
+        res.status(201).send({username: req.headers.user, tweet: req.body.tweet})
     }
 })
 
